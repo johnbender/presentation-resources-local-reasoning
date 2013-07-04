@@ -1,0 +1,24 @@
+* Separation Logic
+** emp
+** P * Q
+** x |-> -
+** x |-> a,b
+** NOTES:
+*** {P}C{Q}
+*** superset of propositional logic (??)
+* Syntax
+* Mutual Exclusion Group
+** cautious - shared stated is accessed only from the same mutual exclusion
+** daring - accesing shared state outside a mutual exclusion group
+* Definitions
+** Ownership Hypothesis
+** Separation Property
+* Binary Semaphore
+** code sample
+** NOTES:
+*** assertion about the heap "appears/disappears" with semaphore
+* Grammar Subset
+** with r when B do C endwith
+** resource(variables)
+* Resource Invariants
+** any command x:= ... changing a *variable* x which is free in RI_ri must occur within a critical region for r_i
