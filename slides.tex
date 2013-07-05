@@ -19,7 +19,7 @@
 \usepackage{alltt}
 \usepackage{amsmath,proof,amsthm,amssymb,enumerate}
 \usepackage{mathtools}
-
+\usepackage{mdframed}
 \newcommand\hmmax{0}
 \newcommand\bmmax{0}
 \usepackage{bm}
@@ -120,38 +120,51 @@
 \setlength{\abovedisplayshortskip}{0pt}
 \setlength{\belowdisplayshortskip}{0pt}
 
-% You can reveal the parts of a slide one at a time
-% with the \pause command:
 \begin{frame}{Separation Logic Review}
-  \begin{itemize}
-  \item {
-    Separating Conjuction
+  \begin{block}{Pointers and pointer arithmetic}
+    $x \mapsto 2,3$ says that $x$ contains the address on the heap where 2 is stored and $x+1$ is where 3 is stored.\\
+    $x \mapsto -$ says that $x$ contains the address on the heap where *something* is stored.
+  \end{block}
 
+  \begin{example}
+    \begin{align*}
+      x &\mapsto a,b \\
+      x &\mapsto -
+    \end{align*}
+
+\vspace{0.5cm}
+
+    \begin{mdframed}
+      \begin{align*}
+        E \mapsto F_0,...F_n & \triangleq (E \mapsto F_0) * ... * (E + n \mapsto F_n)\\
+        E \mapsto - & \triangleq \exists F.E \mapsto F \qquad (F \notin Free(E))
+      \end{align*}
+    \end{mdframed}
+  \end{example}
+\end{frame}
+
+
+\begin{frame}{Separation Logic Review}
+  \begin{block}{Separating Conjunction}
+    If $P$ and $Q$ are true in their own heaps then $P * Q$ is true in the conjunction of those two heaps.
+  \end{block}
+
+  \begin{example}
     \begin{align*}
       \vspace*{-1cm}
-      P\ & *\ Q\\
-      \btt{emp} & * true
+      (x \mapsto 2) * (x \mapsto 1)
     \end{align*}
-  }
+  \end{example}
 
-  \item {
-    The empty subheap
+  \begin{block}{Empty Heap}
+    $\btt{emp}$ represents a heap without allocations.
+  \end{block}
 
+  \begin{example}
     \begin{align*}
-      & \btt{emp} \\
       P \Leftrightarrow\ &\btt{emp} * P
     \end{align*}
-  }
-
-  \item{
-    Pointers and pointer arithmetic
-
-    \begin{align*}
-      E \mapsto F_0,...F_n & \triangleq (E \mapsto F_0) * ... * (E + n \mapsto F_n)\\
-      E \mapsto - & \triangleq \exists F.E \mapsto F \qquad (F \notin Free(E))
-    \end{align*}
-  }
-  \end{itemize}
+  \end{example}
 \end{frame}
 
 \begin{frame}{Expression and Assertion Syntax}
@@ -178,6 +191,33 @@
       \end{alignat*}
     }
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Race-free Daring Programs}
+  \begin{block}{Mutual Exclusion Groups}
+    A class of commands where the elements are required not to overlap in execution.
+  \end{block}
+
+  \begin{block}{Racy vs Race-free}
+    A racy program attempts to access the same portion of state at the same time from different threads of execution.
+  \end{block}
+
+  \begin{block}{Daring vs Cautious}
+    A daring program accesses shared state outside of mutual exclusion groups.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Race-free Daring Programs}
+  \begin{example}
+    \begin{alignat*}{2}
+      &\mathtt{semaphore}\; free := 1;\; &busy := 0 \\
+      &\vdots            &\vdots \\
+      &\mathtt{P}(free); &\mathtt{P}(busy); \\
+      &[10] := m; \qquad\; \|     &n := [10]; \\
+      &\mathtt{V}(busy); &\mathtt{V}(free); \\
+      &\vdots            &\vdots
+    \end{alignat*}
+  \end{example}
 \end{frame}
 
 % You can reveal the parts of a slide one at a time

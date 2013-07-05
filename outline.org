@@ -8,8 +8,8 @@
 *** superset of propositional logic (??)
 * Syntax
 * Mutual Exclusion Group
-** cautious - shared stated is accessed only from the same mutual exclusion
-** daring - accesing shared state outside a mutual exclusion group
+** racy vs race free - attempts to access same portion of state at the same time
+** cautious vs daring - shared stated is accessed only from the same mutual exclusion
 * Definitions
 ** Ownership Hypothesis
 ** Separation Property
