@@ -24,12 +24,14 @@
 \newcommand\bmmax{0}
 \usepackage{bm}
 
-\newcommand{\btt}[1]{
-  \mbox{\bm{$\mathtt{#1}$}}
+\newcommand{\mtt}[1]{
+  \mathtt{#1}\;
 }
 
 \renewcommand{\syntleft}{\normalfont\itshape}
 \renewcommand{\syntright}{}
+
+\newcommand{\bfdefault}{bx}
 
 % There are many different themes available for Beamer. A comprehensive
 % list with examples is given here:
@@ -122,19 +124,19 @@
 
 \begin{frame}{Separation Logic Review}
   \begin{block}{Pointers and pointer arithmetic}
-    $x \mapsto 2,3$ says that $x$ contains the address on the heap where 2 is stored and $x+1$ is where 3 is stored.\\
-    $x \mapsto -$ says that $x$ contains the address on the heap where *something* is stored.
+    $\mapsto$ is the singleton heap. A mapping from an address (Int) to a value contained at that address in the heap.
   \end{block}
 
   \begin{example}
     \begin{align*}
+      10 &\mapsto a \\
       x &\mapsto a,b \\
       x &\mapsto -
     \end{align*}
 
 \vspace{0.5cm}
 
-    \begin{mdframed}
+    \begin{mdframed}[outerlinewidth=2]
       \begin{align*}
         E \mapsto F_0,...F_n & \triangleq (E \mapsto F_0) * ... * (E + n \mapsto F_n)\\
         E \mapsto - & \triangleq \exists F.E \mapsto F \qquad (F \notin Free(E))
@@ -157,40 +159,14 @@
   \end{example}
 
   \begin{block}{Empty Heap}
-    $\btt{emp}$ represents a heap without allocations.
+    $\mtt{emp}$ represents a heap without allocations.
   \end{block}
 
   \begin{example}
     \begin{align*}
-      P \Leftrightarrow\ &\btt{emp} * P
+      P \Leftrightarrow\ &\mtt{emp} * P
     \end{align*}
   \end{example}
-\end{frame}
-
-\begin{frame}{Expression and Assertion Syntax}
-  \begin{itemize}
-    \item {
-      Syntax
-
-      \begin{alignat*}{1}
-        E, F &::=\ x, y, ...\ |\ 0\ |\ 1 |\ E + F\ |\ E \times F\ |\ E - F \\
-        B &::=\ \btt{false}\ |\ B \Rightarrow B\ |\ E = F\ |\ E < F \\
-        P, Q, R &::=\ B\ |\ \btt{emp}\ |\ E \mapsto F\ |\ P * Q\ |\ P \Rightarrow Q\ |\ \forall x.P\ |\ ...
-      \end{alignat*}
-    }
-
-    \item {
-      Abbreviations
-
-      \begin{alignat*}{1}
-        \neg P &= P \Rightarrow false\\
-        true &\triangleq \neg(false)\\
-        P \lor Q &\triangleq (\neg P) \Rightarrow Q\\
-        P \land Q &\triangleq \neg (\neg P \lor \neg Q)\\
-        \exists x. P &\triangleq \neg \forall x.\neg P \\
-      \end{alignat*}
-    }
-  \end{itemize}
 \end{frame}
 
 \begin{frame}{Race-free Daring Programs}
@@ -208,117 +184,94 @@
 \end{frame}
 
 \begin{frame}{Race-free Daring Programs}
+  \begin{block}{Split Binary Semaphore}
+    The heap mutation and variable assignment happen outside of a mutual exclusion group, but this program is not racy.
+  \end{block}
+
   \begin{example}
-    \begin{alignat*}{2}
-      &\mathtt{semaphore}\; free := 1;\; &busy := 0 \\
-      &\vdots            &\vdots \\
-      &\mathtt{P}(free); &\mathtt{P}(busy); \\
-      &[10] := m; \qquad\; \|     &n := [10]; \\
-      &\mathtt{V}(busy); &\mathtt{V}(free); \\
-      &\vdots            &\vdots
+    \begin{alignat*}{3}
+      & \mathtt{semaphore}\; free := 1;\; &&busy := 0 \\
+      & \vdots            && \vdots \\
+      & \mathtt{P}(free); && \mathtt{P}(busy); \\
+      & [10] := m; \qquad \|     && n := [10]; \\
+      & \mathtt{V}(busy); && \mathtt{V}(free); \\
+      & \vdots            && \vdots
     \end{alignat*}
   \end{example}
 \end{frame}
 
-% You can reveal the parts of a slide one at a time
-% with the \pause command:
-\begin{frame}{Second Slide Title}
-  \begin{itemize}
-  \item {
-    First item.
-    \pause % The slide will pause after showing the first item
-  }
-  \item {
-    Second item.
-  }
-  % You can also specify when the content should appear
-  % by using <n->:
-  \item<3-> {
-    Third item.
-  }
-  \item<4-> {
-    Fourth item.
-  }
-  % or you can use the uncover command to reveal general
-  % content (not just \items):
-  \item<5-> {
-    Fifth item. \uncover<6->{Extra text in the fifth item.}
-  }
-  \end{itemize}
-\end{frame}
-
-\section{Second Main Section}
-
-\subsection{Another Subsection}
-
-\begin{frame}{Blocks}
-\begin{block}{Block Title}
-You can also highlight sections of your presentation in a block, with it's own title
-\end{block}
-\begin{theorem}
-There are separate environments for theorems, examples, definitions and proofs.
-\end{theorem}
-\begin{example}
-Here is an example of an example block.
-\end{example}
-\end{frame}
-
-% Placing a * after \section means it will not show in the
-% outline or table of contents.
-\section*{Summary}
-
-\begin{frame}{Summary}
-  \begin{itemize}
-  \item
-    The \alert{first main message} of your talk in one or two lines.
-  \item
-    The \alert{second main message} of your talk in one or two lines.
-  \item
-    Perhaps a \alert{third message}, but not more than that.
-  \end{itemize}
-
-  \begin{itemize}
-  \item
-    Outlook
+\begin{frame}{Resources}
+  \begin{block}{Resources and Variables}
     \begin{itemize}
-    \item
-      Something you haven't solved.
-    \item
-      Something else you haven't solved.
+    \item{
+        A variable belongs to at most one resource.
+    }
+
+    \item{
+        If a variable is owned by a resource it can only appear in a CCR for that resource.
+    }
+
+    \item{
+        If a variable is changed in one process it cannot appear in another unless it belongs to a resource.
+    }
     \end{itemize}
-  \end{itemize}
+  \end{block}
+  \begin{example}
+    \begin{align*}
+      & init;\\
+      & \mtt{resource} r_1\mathrm{(variable\ list)},\ldots,r_n\mathrm{(variable\ list)} \\
+      & \mathit{C_1}\ \| \cdots \|\ \mathit{C_n}\\
+    \end{align*}
+  \end{example}
+
 \end{frame}
 
 
+\begin{frame}{Resources}
+  \begin{block}{Conditional Critical Regions}
+    Unit of mutual exclusion for resources. No other region for $r$ can be executing and $B$ must be true.
+  \end{block}
 
-% All of the following is optional and typically not needed.
-\appendix
-\section<presentation>*{\appendixname}
-\subsection<presentation>*{For Further Reading}
-
-\begin{frame}[allowframebreaks]
-  \frametitle<presentation>{For Further Reading}
-
-  \begin{thebibliography}{10}
-
-  \beamertemplatebookbibitems
-  % Start with overview books.
-
-  \bibitem{Author1990}
-    A.~Author.
-    \newblock {\em Handbook of Everything}.
-    \newblock Some Press, 1990.
+  \begin{example}
+    \begin{align*}
+      \; &\mtt{with} r\ \mtt{when} B\ \mtt{do} C\ \mtt{endwith}\\
+      \mathtt{P}(s)\; \triangleq\; &\mtt{with} s\ \mtt{when} s > 0\ \mtt{do} s := s + 1\ \mtt{endwith}\\
+      \mathtt{V}(s)\; \triangleq\; &\mtt{with} s\ \mtt{when} \mtt{true}\ \mtt{do} s := s + 1\ \mtt{endwith}\\
+    \end{align*}
+  \end{example}
+\end{frame}
 
 
-  \beamertemplatearticlebibitems
-  % Followed by interesting articles. Keep the list short.
+\begin{frame}{Resources}
+  \begin{block}{Resource Invariants}
+    Predicates used to establish the ownership of heap sections through reasoning about resource state.
+  \end{block}
+\end{frame}
 
-  \bibitem{Someone2000}
-    S.~Someone.
-    \newblock On this and that.
-    \newblock {\em Journal of This and That}, 2(1):50--100,
-    2000.
-  \end{thebibliography}
+\begin{frame}{Expression and Assertion Syntax}
+  \begin{itemize}
+    \item {
+      Syntax
+
+      \begin{alignat*}{1}
+        E, F &::=\ x, y, ...\ |\ 0\ |\ 1 |\ E + F\ |\ E \times F\ |\ E - F \\
+        B &::=\ \mtt{false}\ |\ B \Rightarrow B\ |\ E = F\ |\ E < F \\
+        P, Q, R &::=\ B\ |\ \mtt{emp}\ |\ E \mapsto F\ |\ P * Q\ |\ P \Rightarrow Q\ |\ \forall x.P\ |\ ...
+      \end{alignat*}
+    }
+
+    \item {
+      Abbreviations
+
+      \begin{alignat*}{1}
+        \neg P &= P \Rightarrow false\\
+        true &\triangleq \neg(false)\\
+        P \lor Q &\triangleq (\neg P) \Rightarrow Q\\
+        P \land Q &\triangleq \neg (\neg P \lor \neg Q)\\
+        \exists x. P &\triangleq \neg \forall x.\neg P \\
+      \end{alignat*}
+    }
+  \end{itemize}
 \end{frame}
 
 \end{document}
