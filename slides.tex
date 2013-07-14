@@ -232,7 +232,7 @@
   \begin{example}
     \begin{align*}
       \; &\mtt{with} r\ \mtt{when} B\ \mtt{do} C\ \mtt{endwith}\\
-      \mathtt{P}(s)\; \triangleq\; &\mtt{with} s\ \mtt{when} s > 0\ \mtt{do} s := s + 1\ \mtt{endwith}\\
+      \mathtt{P}(s)\; \triangleq\; &\mtt{with} s\ \mtt{when} s > 0\ \mtt{do} s := s - 1\ \mtt{endwith}\\
       \mathtt{V}(s)\; \triangleq\; &\mtt{with} s\ \mtt{when} \mtt{true}\ \mtt{do} s := s + 1\ \mtt{endwith}\\
     \end{align*}
   \end{example}
@@ -246,11 +246,11 @@
 
   \begin{itemize}
     \item{
-        Must be precise, meaning they can only include $\mtt{emp}$, $\mapsto$, $*$, and other precise predicates.
+        Must be precise, meaning they can only include $\mtt{emp}$, $\mapsto$, $*$, and other precise predicates. A conjunction $P \land Q$ is precise if $P$ or $Q$ is precise and $(B \land P) \lor (B' \land Q)$ is precise if both $P$ and $Q$ are and $B$ and $B'$ are pure boolean.
     }
 
     \item{
-        All variables free in a resource invariant $RI_i$ must be altered in CCRs.
+        All variables free in a resource invariant must be altered in CCRs.
     }
     \end{itemize}
 
@@ -288,7 +288,9 @@
     }
   \end{equation*}
 
-  No other process modifies variables free in $P$ or $Q$.
+  \vspace{0.2cm}
+
+  \centerline{\emph{No other process modifies variables free in $P$ or $Q$.}}
 \end{frame}
 
 \begin{frame}{Resources}
@@ -307,6 +309,62 @@
       & \mathtt{V}(busy); && \mathtt{V}(free); \\
       & \{\mathtt{emp}\}  && \{\mathtt{emp}\}  \\
       & \vdots            && \vdots
+    \end{alignat*}
+  \end{example}
+\end{frame}
+
+\begin{frame}{Resources}
+  \begin{block}{First Semaphore Wait}
+    Establish the pre and post conditions for the ownership of address 10 by $free$ using $P(free)$
+  \end{block}
+
+  \begin{example}
+    \begin{alignat*}{1}
+      & \{\mathtt{emp}\} \\
+      & \mathtt{P}(free); \\
+      & \{10 \mapsto -\} \\
+    \end{alignat*}
+  \end{example}
+\end{frame}
+
+\begin{frame}{Resources}
+  \begin{block}{Resource Invariant for $free$}
+    Either $free$ is zero and address 10 is ``owned'' or $free$ is one and nothing is owned.
+
+    \begin{equation*}
+      (free = 1 \land 10 \mapsto -) \lor (free = 0 \land \mathtt{emp})
+    \end{equation*}
+  \end{block}
+
+  \begin{example}
+    \begin{alignat*}{1}
+      & \{\mathtt{emp}\} \\
+      & \mtt{with} free\ \mtt{when} free > 0\ \mtt{do} \\
+      & \qquad free := free - 1\\
+      & \mtt{endwith} \\
+      & \{10 \mapsto -\} \\
+    \end{alignat*}
+  \end{example}
+\end{frame}
+
+\begin{frame}{Resources}
+  \begin{block}{CCR Rules}
+    Show that the body of the CCR is valid with the resource invariant and guard to show the CCR is valid.
+
+    \begin{equation*}
+      \trfrac[]{
+        \{(P * RI_r) \land B \}\ C\ \{Q * RI_r\}
+      }{
+        \{P\}\ \mtt{with} r\ \mtt{when} B\ \mtt{do} C\ \mtt{endwith} \{Q\}
+      }
+    \end{equation*}
+  \end{block}
+
+  \begin{example}
+    \begin{alignat*}{1}
+      & \{(\mathtt{emp}\ *\ (free = 1 \land 10 \mapsto -) \lor (free = 0 \land \mathtt{emp})) \land free > 0 \\
+      & free := free - 1\\
+      & \{10 \mapsto -\ *\ (free = 1 \land 10 \mapsto -) \lor (free = 0 \land \mathtt{emp}) \\
     \end{alignat*}
   \end{example}
 \end{frame}
