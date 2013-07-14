@@ -20,9 +20,7 @@
 \usepackage{amsmath,proof,amsthm,amssymb,enumerate}
 \usepackage{mathtools}
 \usepackage{mdframed}
-\newcommand\hmmax{0}
-\newcommand\bmmax{0}
-\usepackage{bm}
+\usepackage{trfrac}
 
 \newcommand{\mtt}[1]{
   \mathtt{#1}\;
@@ -134,7 +132,7 @@
       x &\mapsto -
     \end{align*}
 
-\vspace{0.5cm}
+    \vspace{0.5cm}
 
     \begin{mdframed}[outerlinewidth=2]
       \begin{align*}
@@ -171,15 +169,15 @@
 
 \begin{frame}{Race-free Daring Programs}
   \begin{block}{Mutual Exclusion Groups}
-    A class of commands where the elements are required not to overlap in execution.
+    Commands where the elements cannot overlap in execution.
   \end{block}
 
   \begin{block}{Racy vs Race-free}
-    A racy program attempts to access the same portion of state at the same time from different threads of execution.
+    Accessing the same portion of state at the same time from different threads of execution.
   \end{block}
 
   \begin{block}{Daring vs Cautious}
-    A daring program accesses shared state outside of mutual exclusion groups.
+    Accessing shared state outside of mutual exclusion groups.
   \end{block}
 \end{frame}
 
@@ -229,7 +227,7 @@
 
 \begin{frame}{Resources}
   \begin{block}{Conditional Critical Regions}
-    Unit of mutual exclusion for resources. No other region for $r$ can be executing and $B$ must be true.
+    Unit of mutual exclusion for resources. Blocks if another region for $r$ is executing or $B$ is false.
   \end{block}
 
   \begin{example}
@@ -244,8 +242,75 @@
 
 \begin{frame}{Resources}
   \begin{block}{Resource Invariants}
-    Predicates used to establish the ownership of heap sections through reasoning about resource state.
+    Predicates used to establish the ownership of heap cells through assertions about resources.
   \end{block}
+
+  \begin{itemize}
+    \item{
+        Must be precise, meaning they can only include $\mtt{emp}$, $\mapsto$, $*$, and other precise predicates.
+    }
+
+    \item{
+        All variables free in a resource invariant $RI_i$ must be altered in CCRs.
+    }
+    \end{itemize}
+
+    \vspace{0.5cm}
+
+    \begin{mdframed}[outerlinewidth=2]
+      As assertion $P$ is \emph{precise} if for all states $(s, h)$ there is at most one subheap $h' \sqsubseteq h$ where $s,h \models P$.
+    \end{mdframed}
+\end{frame}
+
+\begin{frame}{Resources}
+  \begin{block}{Init Sequence Rule}
+    Variable and resource initialization.
+  \end{block}
+
+  \begin{equation*}
+    \trfrac[]{
+      \{P\}init\{RI_{r_1} *\cdots* RI_{r_m} * P'\} \qquad \{P'\}C_1 \| \cdots \| C_n \{Q\}
+    }{
+      \{P\} init;\ \mtt{resource} r_1 \dots\ ;\ C_1 \| \cdots \| C_n\ \{RI_{r_1} *\dots* RI_{r_m} *Q\}
+    }
+  \end{equation*}
+
+  \vspace{0.5cm}
+
+  \begin{block}{Critical Regions Rule}
+    Reasoning about the body of a CCR.
+  \end{block}
+
+  \begin{equation*}
+    \trfrac[]{
+      \{(P * RI_r) \land B \}\ C\ \{Q * RI_r\}
+    }{
+      \{P\}\ \mtt{with} r\ \mtt{when} B\ \mtt{do} C\ \mtt{endwith} \{Q\}
+    } \\
+
+  \end{equation*}
+
+  No other process modifies variables free in $P$ or $Q$.
+\end{frame}
+
+\begin{frame}{Resources}
+  \begin{block}{Split Binary Semaphore}
+    The goal is to establish the ``ownership'' of heap address 10.
+  \end{block}
+
+  \begin{example}
+    \begin{alignat*}{3}
+      & \vdots            && \vdots \\
+      & \{\mathtt{emp}\}  && \{\mathtt{emp}\}  \\
+      & \mathtt{P}(free); && \mathtt{P}(busy); \\
+      & \{10 \mapsto -\}  && \{10 \mapsto -\}  \\
+      & [10] := m; & \qquad \| \qquad & n := [10]; \\
+      & \{10 \mapsto -\}  && \{10 \mapsto -\}  \\
+      & \mathtt{V}(busy); && \mathtt{V}(free); \\
+      & \{\mathtt{emp}\}  && \{\mathtt{emp}\}  \\
+      & \vdots            && \vdots
+    \end{alignat*}
+  \end{example}
 \end{frame}
 
 \begin{frame}{Expression and Assertion Syntax}
