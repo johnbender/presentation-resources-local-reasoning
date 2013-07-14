@@ -1,6 +1,6 @@
 ## Resources, Concurrency, and Local Reasoning
 
-This is a presentation for the PLRG (Programming Language Reading Group) held at UCLA Thursdays during the spring and summer of 2013. It covers O'Hearn's [*Resources, Concurrency, and Local Reasoning*](http://www.eecs.qmul.ac.uk/~ohearn/papers/concurrency.pdf‎) [PDF].
+This is a presentation for the PLRG (Programming Language Reading Group) held at UCLA Thursdays during the spring and summer of 2013. It covers O'Hearn's [*Resources, Concurrency, and Local Reasoning*](http://www.eecs.qmul.ac.uk/~ohearn/papers/concurrency.pdf) [PDF].
 
 The slides have been created with LaTeX and the Beamer package.
 
